@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import {
   Box,
@@ -12,20 +12,59 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import * as Yup from 'yup';
+import * as Yup from "yup";
 import FullScreenSection from "./FullScreenSection";
 import useSubmit from "../hooks/useSubmit";
-import {useAlertContext} from "../context/alertContext";
+import { useAlertContext } from "../context/alertContext";
 
 const LandingSection = () => {
-  const {isLoading, response, submit} = useSubmit();
+  const { isLoading, response, submit } = useSubmit();
   const { onOpen } = useAlertContext();
 
   const formik = useFormik({
-    initialValues: {},
-    onSubmit: (values) => {},
-    validationSchema: Yup.object({}),
+    initialValues: {
+      firstName: "",
+      email: "",
+      type: "",
+      comment: "",
+    },
+    onSubmit: async (values) => {
+      // e.preventDefault();
+      console.log("this is formik: ", values);
+      await submit("", values);
+      // resetForm()
+    },
+    validationSchema: Yup.object({
+      // firstName: Yup.string().required("First Name is required"),
+      // email: Yup.string()
+      //   .email("Invalid email address")
+      //   .required("Email is required"),
+      // type: Yup.string().required("Type is required"),
+      // comment: Yup.string().required("Comment is required"),
+    }),
   });
+
+  // Handle the response and show an alert based on the response type
+  const handleResponse = () => {
+    console.log("response ", response);
+    if (response) {
+      if (response.type === "success") {
+        onOpen(response.type, response.message);
+      } else if (response.type === "error") {
+        onOpen(response.type, response.message); // Show error alert using the onOpen function from useAlertContext
+      }
+    }
+  };
+
+  // Listen to changes in the response and show the alert accordingly
+  useEffect(() => {
+    handleResponse();
+  }, [response]);
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    formik.setFieldValue(name, value);
+  };
 
   return (
     <FullScreenSection
@@ -39,13 +78,19 @@ const LandingSection = () => {
           Contact me
         </Heading>
         <Box p={6} rounded="md" w="100%">
-          <form>
+          <form
+            // onSubmit={formik.onSubmit}
+            onSubmit={formik.handleSubmit}
+            // onSubmit={handleSubmit}
+          >
             <VStack spacing={4}>
               <FormControl isInvalid={false}>
                 <FormLabel htmlFor="firstName">Name</FormLabel>
                 <Input
                   id="firstName"
                   name="firstName"
+                  value={formik.values.firstName}
+                  onChange={handleInputChange}
                 />
                 <FormErrorMessage></FormErrorMessage>
               </FormControl>
@@ -55,6 +100,8 @@ const LandingSection = () => {
                   id="email"
                   name="email"
                   type="email"
+                  value={formik.values.email}
+                  onChange={handleInputChange}
                 />
                 <FormErrorMessage></FormErrorMessage>
               </FormControl>
@@ -70,11 +117,7 @@ const LandingSection = () => {
               </FormControl>
               <FormControl isInvalid={false}>
                 <FormLabel htmlFor="comment">Your message</FormLabel>
-                <Textarea
-                  id="comment"
-                  name="comment"
-                  height={250}
-                />
+                <Textarea id="comment" name="comment" height={250} />
                 <FormErrorMessage></FormErrorMessage>
               </FormControl>
               <Button type="submit" colorScheme="purple" width="full">
