@@ -10,7 +10,7 @@ const Card = ({ title, description, imageSrc }) => {
   return (
     <HStack>
       <Box height="100%" borderRadius="lg" color="#000" bg="#fff">
-        <Image src={imageSrc} alt="Card Image" borderRadius="8px" />
+        <Image src={imageSrc} alt={title} borderRadius="8px" />
         <Box p="4">
           <Text fontWeight="bold" fontSize="l">
             {title}

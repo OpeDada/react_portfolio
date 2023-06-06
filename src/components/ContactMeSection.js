@@ -29,9 +29,7 @@ const LandingSection = () => {
       comment: "",
     },
     onSubmit: (values) => {
-      console.log("this is formik: ", values);
       submit("", values);
-      console.log("values", values);
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("Required"),
@@ -42,28 +40,13 @@ const LandingSection = () => {
     }),
   });
 
-  // Handle the response and show an alert based on the response type
-  const handleResponse = () => {
-    console.log("response ", response);
-    if (response) {
-      if (response.type === "success") {
-        onOpen(response.type, response.message);
-        formik.resetForm();
-      } else if (response.type === "error") {
-        onOpen(response.type, response.message); // Show error alert using the onOpen function from useAlertContext
-      }
-    }
-  };
-
   // Listen to changes in the response and show the alert accordingly
   useEffect(() => {
-    handleResponse();
+    if (response) {
+      onOpen(response.type, response.message);
+      if (response.type === "success") formik.resetForm();
+    }
   }, [response]);
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    formik.setFieldValue(name, value);
-  };
 
   return (
     <FullScreenSection
@@ -88,7 +71,6 @@ const LandingSection = () => {
                   name="firstName"
                   value={formik.values.firstName}
                   {...formik.getFieldProps("firstName")}
-                  onChange={handleInputChange}
                 />
                 <FormErrorMessage>{formik.errors.firstName}</FormErrorMessage>
               </FormControl>
@@ -102,7 +84,6 @@ const LandingSection = () => {
                   type="email"
                   value={formik.values.email}
                   {...formik.getFieldProps("email")}
-                  onChange={handleInputChange}
                 />
                 <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
               </FormControl>
@@ -113,7 +94,6 @@ const LandingSection = () => {
                   name="type"
                   value={formik.values.type}
                   {...formik.getFieldProps("type")}
-                  onChange={handleInputChange}
                 >
                   <option value="hireMe">Freelance project proposal</option>
                   <option value="openSource">
@@ -132,7 +112,6 @@ const LandingSection = () => {
                   height={250}
                   value={formik.values.comment}
                   {...formik.getFieldProps("comment")}
-                  onChange={handleInputChange}
                 />
                 <FormErrorMessage>{formik.errors.comment}</FormErrorMessage>
               </FormControl>
@@ -140,9 +119,9 @@ const LandingSection = () => {
                 type="submit"
                 colorScheme="purple"
                 width="full"
-                disabled={isLoading}
+                isLoading={isLoading}
               >
-                {isLoading ? "Loading..." : "Submit"}
+                Submit
               </Button>
             </VStack>
           </form>
