@@ -31,7 +31,6 @@ const LandingSection = () => {
     onSubmit: (values) => {
       console.log("this is formik: ", values);
       submit("", values);
-      // resetForm()
       console.log("values", values);
     },
     validationSchema: Yup.object({
@@ -50,6 +49,7 @@ const LandingSection = () => {
     if (response) {
       if (response.type === "success") {
         onOpen(response.type, response.message);
+        formik.resetForm();
       } else if (response.type === "error") {
         onOpen(response.type, response.message); // Show error alert using the onOpen function from useAlertContext
       }
