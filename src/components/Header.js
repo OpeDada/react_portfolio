@@ -7,7 +7,7 @@ import {
   faMedium,
   faStackOverflow,
 } from "@fortawesome/free-brands-svg-icons";
-import { Box, HStack, Link } from "@chakra-ui/react";
+import { Box, HStack } from "@chakra-ui/react";
 
 const socials = [
   {
@@ -33,29 +33,30 @@ const socials = [
 ];
 
 const Header = () => {
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [isVisible, setVisible] = useState(true);
   const headerRef = useRef(null);
 
   useEffect(() => {
+    let prevScrollPos = window.scrollY;
+
     const handleScroll = () => {
-      const currentScrollPos = window.pageYOffset;
-      const isScrollingUp = prevScrollPos > currentScrollPos;
-
-      setPrevScrollPos(currentScrollPos);
-
-      if (isScrollingUp) {
-        setVisible(true);
-      } else {
-        setVisible(false);
+      const currentScrollPos = window.scrollY;
+      const headerElement = headerRef.current;
+      if (!headerElement) {
+        return;
       }
+      if (prevScrollPos > currentScrollPos) {
+        headerElement.style.transform = "translateY(0)";
+      } else {
+        headerElement.style.transform = "translateY(-200px)";
+      }
+      prevScrollPos = currentScrollPos;
     };
-
     window.addEventListener("scroll", handleScroll);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [prevScrollPos]);
+  }, []);
 
   const handleClick = (anchor) => () => {
     const id = `${anchor}-section`;
@@ -74,8 +75,8 @@ const Header = () => {
       top={0}
       left={0}
       right={0}
+      translateY={0}
       transition="transform 0.3s ease-in-out"
-      transform={isVisible ? "translateY(0)" : "translateY(-200px)"}
       backgroundColor="#18181b"
       ref={headerRef}
     >
@@ -87,10 +88,15 @@ const Header = () => {
           alignItems="center"
         >
           <nav>
-            <HStack spacing={6}>
-              {socials.map((social, index) => (
-                <a href={social.url} key={index} target="_blank">
-                  <FontAwesomeIcon icon={social.icon} size="2x" />
+            <HStack spacing={8}>
+              {socials.map(({ icon, url }) => (
+                <a
+                  key={url}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FontAwesomeIcon icon={icon} size="2x" key={url} />
                 </a>
               ))}
             </HStack>
