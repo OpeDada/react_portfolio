@@ -17,7 +17,7 @@ import FullScreenSection from "./FullScreenSection";
 import useSubmit from "../hooks/useSubmit";
 import { useAlertContext } from "../context/alertContext";
 
-const LandingSection = () => {
+const ContactMeSection = () => {
   const { isLoading, response, submit } = useSubmit();
   const { onOpen } = useAlertContext();
 
@@ -63,26 +63,24 @@ const LandingSection = () => {
           <form onSubmit={formik.handleSubmit}>
             <VStack spacing={4}>
               <FormControl
-                isInvalid={formik.errors.firstName && formik.touched.firstName}
+                isInvalid={!!formik.errors.firstName && formik.touched.firstName}
               >
                 <FormLabel htmlFor="firstName">Name</FormLabel>
                 <Input
                   id="firstName"
                   name="firstName"
-                  value={formik.values.firstName}
                   {...formik.getFieldProps("firstName")}
                 />
                 <FormErrorMessage>{formik.errors.firstName}</FormErrorMessage>
               </FormControl>
               <FormControl
-                isInvalid={formik.errors.email && formik.touched.email}
+                isInvalid={!!formik.errors.email && formik.touched.email}
               >
                 <FormLabel htmlFor="email">Email Address</FormLabel>
                 <Input
                   id="email"
                   name="email"
                   type="email"
-                  value={formik.values.email}
                   {...formik.getFieldProps("email")}
                 />
                 <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
@@ -92,7 +90,6 @@ const LandingSection = () => {
                 <Select
                   id="type"
                   name="type"
-                  value={formik.values.type}
                   {...formik.getFieldProps("type")}
                 >
                   <option value="hireMe">Freelance project proposal</option>
@@ -103,14 +100,13 @@ const LandingSection = () => {
                 </Select>
               </FormControl>
               <FormControl
-                isInvalid={formik.errors.comment && formik.touched.comment}
+                isInvalid={!!formik.errors.comment && formik.touched.comment}
               >
                 <FormLabel htmlFor="comment">Your message</FormLabel>
                 <Textarea
                   id="comment"
                   name="comment"
                   height={250}
-                  value={formik.values.comment}
                   {...formik.getFieldProps("comment")}
                 />
                 <FormErrorMessage>{formik.errors.comment}</FormErrorMessage>
@@ -131,4 +127,4 @@ const LandingSection = () => {
   );
 };
 
-export default LandingSection;
+export default ContactMeSection;
